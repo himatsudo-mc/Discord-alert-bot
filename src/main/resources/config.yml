@@ -1,0 +1,63 @@
+# ============================================================
+# GriefDetector 設定ファイル
+# 変更後は /griefdetect reload で反映できます（再起動不要）
+# ============================================================
+
+# プラグイン全体のマスタースイッチ。false にすると全検知を即座に停止します。
+enabled: true
+
+discord:
+  # Discord の Webhook URL（サーバー設定 > 連携サービス > ウェブフック で発行）
+  # 空のままだと Discord 通知はスキップされ、コンソール/ゲーム内通知のみになります。
+  webhook-url: ""
+  # Webhook の表示名
+  username: "GriefDetector"
+  # 同一プレイヤー・同一種別のアラートを再送するまでの最短間隔（秒）。通知スパム防止。
+  cooldown-seconds: 60
+
+# ゲーム内通知（griefdetector.notify 権限を持つプレイヤーに表示）
+in-game-notify: true
+
+# GrimAC 連携（Tier A）
+grim:
+  # true かつ GrimAC が導入されていれば、Grim の違反フラグをアラートに変換します。
+  enabled: true
+  # Grim のチェック名にこれらの語（部分一致・大文字小文字無視）が含まれる場合、
+  # 「異常移動速度」アラートとして扱います。
+  speed-checks: [Speed, Timer, Fly, Motion, Elytra, Vehicle]
+  # 同様に「Nuker」アラートとして扱うチェック名。
+  nuker-checks: [Nuker, FastBreak, BadPackets, AirPlace, Break, Dig]
+  # この違反回数（Grim側のVL）未満のフラグは無視します。誤検知ノイズ対策。
+  min-violations: 5
+
+detectors:
+  # ---- TNT検知（完全自前実装） ----
+  tnt:
+    enabled: true
+    # この秒数のウィンドウ内で
+    window-seconds: 60
+    # この回数を超えて TNT を着火したらアラート
+    max-ignitions: 5
+
+  # ---- 異常移動速度検知 ----
+  speed:
+    enabled: true
+    # auto   : GrimAC があれば Grim に任せ、自前ロジックは無効化（推奨）
+    # grim   : Grim 連携のみ（Grim 未導入なら何もしない）
+    # custom : 常に自前ロジックを使用（※簡易判定のため誤検知しえます）
+    # off    : このモジュールを無効化（enabled: false と同じ）
+    mode: auto
+    # 水平移動速度の上限（ブロック/秒）。素の全力疾走ジャンプは約 7.1 b/s。
+    max-horizontal-blocks-per-second: 12.0
+    # この秒数連続で超過した場合のみアラート（瞬間的なノックバック等を除外）
+    sustained-seconds: 3
+
+  # ---- Nuker検知 ----
+  nuker:
+    enabled: true
+    # speed.mode と同じ意味
+    mode: auto
+    # このウィンドウ（秒）内で
+    window-seconds: 2
+    # この個数を超えるブロック破壊があればアラート
+    max-breaks: 30
