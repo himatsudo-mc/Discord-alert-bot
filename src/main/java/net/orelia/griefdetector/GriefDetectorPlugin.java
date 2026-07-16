@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import net.orelia.griefdetector.alert.AlertService;
 import net.orelia.griefdetector.command.GriefDetectCommand;
 import net.orelia.griefdetector.detect.DetectorManager;
+import net.orelia.griefdetector.detect.FlyDetector;
 import net.orelia.griefdetector.detect.NukerDetector;
 import net.orelia.griefdetector.detect.SpeedDetector;
 import net.orelia.griefdetector.detect.TntDetector;
@@ -34,6 +35,7 @@ public final class GriefDetectorPlugin extends JavaPlugin {
         detectorManager.register(new TntDetector(this, alertService));
         detectorManager.register(new SpeedDetector(this, alertService, grimBridge));
         detectorManager.register(new NukerDetector(this, alertService, grimBridge));
+        detectorManager.register(new FlyDetector(this, alertService, grimBridge));
 
         reloadAll();
 

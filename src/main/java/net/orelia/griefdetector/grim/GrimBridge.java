@@ -50,6 +50,7 @@ public final class GrimBridge implements Listener {
     private volatile boolean hooked;
     private volatile List<String> speedChecks = List.of();
     private volatile List<String> nukerChecks = List.of();
+    private volatile List<String> flyChecks = List.of();
     private volatile double minViolations = 5;
     private String hookedClassName = "";
 
@@ -72,6 +73,7 @@ public final class GrimBridge implements Listener {
         }
         speedChecks = lowerCase(grimSection.getStringList("speed-checks"));
         nukerChecks = lowerCase(grimSection.getStringList("nuker-checks"));
+        flyChecks = lowerCase(grimSection.getStringList("fly-checks"));
         minViolations = grimSection.getDouble("min-violations", 5);
 
         for (String className : FLAG_EVENT_CANDIDATES) {
@@ -175,6 +177,12 @@ public final class GrimBridge implements Listener {
 
     private AlertType classify(String checkName) {
         String lower = checkName.toLowerCase(Locale.ROOT);
+        // 飛行系はチェック名が移動系と紛らわしいため最初に判定する
+        for (String key : flyChecks) {
+            if (lower.contains(key)) {
+                return AlertType.FLY;
+            }
+        }
         for (String key : speedChecks) {
             if (lower.contains(key)) {
                 return AlertType.SPEED;

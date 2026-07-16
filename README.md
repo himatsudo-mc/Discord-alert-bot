@@ -5,13 +5,19 @@
 防御は WorldGuard、アンチチートは Grim、ロールバックは CoreProtect、最終防衛は定期バックアップが担う前提で、
 本プラグインの役割は **「異常を検知し、即座に Discord へ通知する」こと一本** に絞っている。
 
-## 検知対象（初期スコープ）
+## 検知対象
 
 | モジュール | 内容 | 実装方式 |
 |---|---|---|
 | `tnt` | プレイヤーが着火した TNT の異常な連続使用 | 完全自前実装 |
 | `speed` | エリトラ・俊敏効果なしでの規定速度超過（SpeedHack系） | ハイブリッド（Tier A: Grim / Tier B: 自前） |
 | `nuker` | 人間では不可能な速度でのブロック破壊 | ハイブリッド（Tier A: Grim / Tier B: 自前） |
+| `fly` | エリトラ以外での不正飛行（FlyHack系） | ハイブリッド（Tier A: Grim / Tier B: 自前） |
+
+## GrimAC との責務分担
+
+- **本プラグイン = 検知の通知**: Grim の違反フラグも本プラグインが受け取り、必須5項目付きの統一フォーマットで Discord へ通知する。通知の重複を避けるため、Grim 標準の Discord 通知（`plugins/GrimAC/discord.yml`）は無効のままを推奨。
+- **Grim = プレイヤーへの対策**: Grim はチート挙動をリアルタイムでセットバック（巻き戻し）して無効化する。キック/BAN などの処罰は Grim の `punishments.yml` で設定する。
 
 ## 通知内容（必須5項目）
 
@@ -75,6 +81,10 @@ detectors:
     mode: auto
     window-seconds: 2
     max-breaks: 30
+  fly:
+    enabled: true
+    mode: auto
+    max-airborne-seconds: 5
 ```
 
 ## モジュール追加の指針

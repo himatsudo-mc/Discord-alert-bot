@@ -19,14 +19,21 @@ discord:
 in-game-notify: true
 
 # GrimAC 連携（Tier A）
+#
+# 【責務分担】検知の通知（Discord）は本プラグイン、プレイヤーへの対策は Grim が担います。
+#  - Grim はチート挙動をリアルタイムでセットバック（巻き戻し）して無効化します。
+#    キック/BAN は Grim の plugins/GrimAC/punishments.yml で設定してください。
+#  - 通知の重複を避けるため、Grim 側の discord.yml は無効のままを推奨します。
 grim:
   # true かつ GrimAC が導入されていれば、Grim の違反フラグをアラートに変換します。
   enabled: true
   # Grim のチェック名にこれらの語（部分一致・大文字小文字無視）が含まれる場合、
   # 「異常移動速度」アラートとして扱います。
-  speed-checks: [Speed, Timer, Fly, Motion, Elytra, Vehicle]
+  speed-checks: [Speed, Timer, Motion, Elytra, Vehicle, Simulation, Prediction]
   # 同様に「Nuker」アラートとして扱うチェック名。
   nuker-checks: [Nuker, FastBreak, BadPackets, AirPlace, Break, Dig]
+  # 同様に「不正飛行」アラートとして扱うチェック名。
+  fly-checks: [Fly, NoFall, GroundSpoof, Levitation]
   # この違反回数（Grim側のVL）未満のフラグは無視します。誤検知ノイズ対策。
   min-violations: 5
 
@@ -61,3 +68,12 @@ detectors:
     window-seconds: 2
     # この個数を超えるブロック破壊があればアラート
     max-breaks: 30
+
+  # ---- 飛行検知（エリトラ以外） ----
+  fly:
+    enabled: true
+    # speed.mode と同じ意味
+    mode: auto
+    # 接地せず・落下もせずに空中に留まり続けた秒数がこれに達したらアラート
+    # （エリトラ・浮遊/低速落下効果・水中・はしご・騎乗・飛行許可は除外）
+    max-airborne-seconds: 5

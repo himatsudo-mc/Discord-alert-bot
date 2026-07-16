@@ -2,7 +2,7 @@ package net.orelia.griefdetector.detect;
 
 import java.util.Locale;
 
-/** ハイブリッド検知モジュール（Speed/Nuker）の動作モード。 */
+/** ハイブリッド検知モジュール（Speed/Nuker/Fly）の動作モード。 */
 public enum DetectionMode {
     /** GrimAC があれば Grim（Tier A）、なければ自前ロジック（Tier B）。 */
     AUTO,
