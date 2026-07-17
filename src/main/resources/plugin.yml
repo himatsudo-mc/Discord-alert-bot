@@ -1,0 +1,21 @@
+name: GriefDetector
+version: "${version}"
+main: net.orelia.griefdetector.GriefDetectorPlugin
+api-version: "1.21"
+description: Detects grief-like behavior (TNT spam, speed hacks, nuker) and sends alerts to Discord.
+author: orelia
+softdepend: [GrimAC, WorldGuard, CoreProtect]
+
+commands:
+  griefdetect:
+    description: GriefDetector admin command
+    usage: /griefdetect <reload|status|test>
+    permission: griefdetector.admin
+
+permissions:
+  griefdetector.admin:
+    description: Allows use of /griefdetect
+    default: op
+  griefdetector.notify:
+    description: Receive in-game grief alerts
+    default: op
