@@ -59,6 +59,9 @@ TNT 検知はアンチチートの範疇ではない「荒らし行動」その�
 
 ゲーム内アラート通知は `griefdetector.notify` 権限（デフォルト: OP）を持つプレイヤーに表示される。
 
+OP、および `griefdetector.bypass` 権限（デフォルト: OP）を持つプレイヤーは、全検知モジュール
+（Fly/Speed/Nuker/TNT、GrimAC 連携含む）の対象から除外される。管理作業中の誤検知を防ぐための措置。
+
 ## 設定（config.yml 抜粋）
 
 ```yaml

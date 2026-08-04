@@ -19,3 +19,6 @@ permissions:
   griefdetector.notify:
     description: Receive in-game grief alerts
     default: op
+  griefdetector.bypass:
+    description: Exempts the player from all grief detection alerts (granted to OPs by default)
+    default: op
