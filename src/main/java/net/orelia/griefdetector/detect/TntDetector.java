@@ -72,7 +72,7 @@ public final class TntDetector implements Detector, Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTntPrime(TNTPrimeEvent event) {
         Player igniter = resolvePlayer(event.getPrimingEntity());
-        if (igniter == null) {
+        if (igniter == null || DetectionExemptions.isBypassed(igniter)) {
             return;
         }
         long now = System.currentTimeMillis();

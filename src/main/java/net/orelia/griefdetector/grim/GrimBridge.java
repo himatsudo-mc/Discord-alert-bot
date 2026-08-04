@@ -20,6 +20,7 @@ import org.bukkit.plugin.Plugin;
 import net.orelia.griefdetector.alert.Alert;
 import net.orelia.griefdetector.alert.AlertService;
 import net.orelia.griefdetector.alert.AlertType;
+import net.orelia.griefdetector.detect.DetectionExemptions;
 
 /**
  * GrimAC 連携（Tier A）。
@@ -166,7 +167,7 @@ public final class GrimBridge implements Listener {
                     checkName, violations >= 0 ? String.valueOf(violations) : "不明");
             Bukkit.getScheduler().runTask(plugin, () -> {
                 Player player = Bukkit.getPlayer(uuid);
-                if (player != null && player.isOnline()) {
+                if (player != null && player.isOnline() && !DetectionExemptions.isBypassed(player)) {
                     alerts.raise(Alert.of(player, type, detail));
                 }
             });

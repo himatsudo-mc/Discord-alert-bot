@@ -195,6 +195,9 @@ public final class SpeedDetector implements Detector, Listener {
 
     /** 正当に高速移動しうる状態は判定から除外する。 */
     private boolean isExempt(Player player) {
+        if (DetectionExemptions.isBypassed(player)) {
+            return true;
+        }
         if (player.isGliding() || player.isRiptiding() || player.isFlying() || player.getAllowFlight()) {
             return true;
         }

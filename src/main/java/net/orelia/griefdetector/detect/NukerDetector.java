@@ -124,6 +124,9 @@ public final class NukerDetector implements Detector, Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
+        if (DetectionExemptions.isBypassed(player)) {
+            return;
+        }
         long now = System.currentTimeMillis();
         Deque<Long> times = breakTimes.computeIfAbsent(player.getUniqueId(), k -> new ArrayDeque<>());
         int count;
