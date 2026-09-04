@@ -62,7 +62,8 @@ public final class AlertService {
                 alert.coordinates(), alert.ipAddress(), alert.detail()));
 
         if (inGameNotify) {
-            String message = "§c[GriefDetector] §f" + alert.type().label() + ": §e" + alert.playerName()
+            String severityColor = alert.type().severity() == Severity.WARNING ? "§6" : "§c";
+            String message = severityColor + "[GriefDetector] §f" + alert.type().label() + ": §e" + alert.playerName()
                     + " §7@ " + alert.coordinates() + " §f- " + alert.detail();
             runOnMainThread(() -> Bukkit.getOnlinePlayers().stream()
                     .filter(p -> p.hasPermission("griefdetector.notify"))

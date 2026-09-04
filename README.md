@@ -13,6 +13,9 @@
 | `speed` | エリトラ・俊敏効果なしでの規定速度超過（SpeedHack系） | ハイブリッド（Tier A: Grim / Tier B: 自前） |
 | `nuker` | 人間では不可能な速度でのブロック破壊 | ハイブリッド（Tier A: Grim / Tier B: 自前） |
 | `fly` | エリトラ以外での不正飛行（FlyHack系） | ハイブリッド（Tier A: Grim / Tier B: 自前） |
+| `arson` | TNT以外（フリント&スチール等）での異常な連続放火 | 完全自前実装 |
+| `xray` | 貴重鉱石の異常な採掘頻度（統計的異常。warning 扱い） | 完全自前実装（GrimAC非依存） |
+| `combat` | 近接戦闘系（Reach/Killaura/オートクリッカー等） | GrimAC 連携専任（自前ロジックなし） |
 
 ## GrimAC との責務分担
 
@@ -24,6 +27,10 @@
 すべてのアラートに **検知時間 / プレイヤーID / アラート発生座標 / IPアドレス / 荒らし種別** を含む
 （加えて検知の詳細メッセージを添付）。Discord には embed 形式で送信される。
 
+アラートには重要度（severity）があり、embed の色で区別される。
+- **alert**（赤・🚨）: TNT/Speed/Nuker/Fly/Arson/Combat。確度の高い荒らし行為。
+- **warning**（橙・⚠️）: Xray のみ。統計的異常検知であり「たまたま」の可能性を否定できないため。
+
 ## Grim 併用のハイブリッド方式（Tier A / Tier B）
 
 - **Tier A（推奨・優先）**: GrimAC が導入されていれば、Grim の違反フラグイベント（FlagEvent）をフックして
@@ -34,10 +41,15 @@
 - **Tier B（フォールバック）**: 移動距離/秒の計測・ブロック破壊間隔の計測による簡易な自前ロジック。
   **補助的検知であり誤検知しうる**（エリトラ・俊敏・騎乗・テレポート直後などは除外済み）。
 
-`speed.mode` / `nuker.mode` を `auto | grim | custom | off` で切り替え可能。
+`speed.mode` / `nuker.mode` / `fly.mode` を `auto | grim | custom | off` で切り替え可能。
 デフォルトの `auto` は Grim があれば Grim 優先で Tier B を自動無効化する。
 
-TNT 検知はアンチチートの範疇ではない「荒らし行動」そのものなので、常に自前実装で動作する。
+`combat`（近接戦闘系）は GrimAC 連携専任で、`mode` は `auto | grim | off` のみサポートする
+（`custom` は自前ロジック未実装のため警告ログを出して起動しない）。Reach/Killaura/
+オートクリッカー等の簡易自前判定は誤検知率が高いため、あえて Tier B を持たない設計とした。
+
+TNT・放火（arson）検知はアンチチートの範疇ではない「荒らし行動」そのものなので、常に自前実装で動作する。
+Xray 検知も同様に GrimAC 非依存の完全自前実装（統計的な採掘パターン検知）。
 
 ## 導入
 
@@ -60,7 +72,8 @@ TNT 検知はアンチチートの範疇ではない「荒らし行動」その�
 ゲーム内アラート通知は `griefdetector.notify` 権限（デフォルト: OP）を持つプレイヤーに表示される。
 
 OP、および `griefdetector.bypass` 権限（デフォルト: OP）を持つプレイヤーは、全検知モジュール
-（Fly/Speed/Nuker/TNT、GrimAC 連携含む）の対象から除外される。管理作業中の誤検知を防ぐための措置。
+（Fly/Speed/Nuker/TNT/Arson/Xray/Combat、GrimAC 連携含む）の対象から除外される。
+管理作業中の誤検知を防ぐための措置。
 
 ## 設定（config.yml 抜粋）
 
@@ -69,6 +82,8 @@ enabled: true            # マスタースイッチ（全モジュール即時�
 discord:
   webhook-url: ""        # Discord Webhook URL
   cooldown-seconds: 60   # 同一プレイヤー・同一種別の再通知間隔
+grim:
+  combat-checks: [Killaura, Reach, HitBox, AutoClicker, Aim, Rotation]
 detectors:
   tnt:
     enabled: true
@@ -88,6 +103,18 @@ detectors:
     enabled: true
     mode: auto
     max-airborne-seconds: 5
+  arson:
+    enabled: true
+    window-seconds: 60
+    max-ignitions: 5
+  xray:
+    enabled: true         # 常に warning（橙）として通知
+    window-seconds: 300
+    max-ore-breaks: 8
+    ores: [DIAMOND_ORE, DEEPSLATE_DIAMOND_ORE, ANCIENT_DEBRIS, EMERALD_ORE, DEEPSLATE_EMERALD_ORE]
+  combat:
+    enabled: true
+    mode: auto           # auto | grim | off（custom は未対応）
 ```
 
 ## モジュール追加の指針

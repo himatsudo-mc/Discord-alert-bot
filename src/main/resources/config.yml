@@ -34,6 +34,8 @@ grim:
   nuker-checks: [Nuker, FastBreak, BadPackets, AirPlace, Break, Dig]
   # 同様に「不正飛行」アラートとして扱うチェック名。
   fly-checks: [Fly, NoFall, GroundSpoof, Levitation]
+  # 同様に「近接戦闘系」アラートとして扱うチェック名。
+  combat-checks: [Killaura, Reach, HitBox, AutoClicker, Aim, Rotation]
   # この違反回数（Grim側のVL）未満のフラグは無視します。誤検知ノイズ対策。
   min-violations: 5
 
@@ -77,3 +79,33 @@ detectors:
     # 接地せず・落下もせずに空中に留まり続けた秒数がこれに達したらアラート
     # （エリトラ・浮遊/低速落下効果・水中・はしご・騎乗・飛行許可は除外）
     max-airborne-seconds: 5
+
+  # ---- 放火・延焼検知（TNT以外。完全自前実装） ----
+  arson:
+    enabled: true
+    # この秒数のウィンドウ内で
+    window-seconds: 60
+    # この回数を超えてフリント&スチール/ファイアボールで着火したらアラート
+    max-ignitions: 5
+
+  # ---- Xray検知（完全自前実装・GrimAC非依存） ----
+  # 統計的異常検知であり「たまたま高効率で掘り当てた」可能性を否定できないため、
+  # 常に warning（Discord embed は橙）として通知されます。
+  xray:
+    enabled: true
+    # このウィンドウ（秒）内で
+    window-seconds: 300
+    # この個数を超える貴重鉱石の採掘があれば warning
+    max-ore-breaks: 8
+    # 対象とする貴重鉱石
+    ores: [DIAMOND_ORE, DEEPSLATE_DIAMOND_ORE, ANCIENT_DEBRIS, EMERALD_ORE, DEEPSLATE_EMERALD_ORE]
+
+  # ---- 近接戦闘系検知（Reach/Killaura/オートクリッカー等） ----
+  # GrimAC 連携専任（自前ロジックなし）。Grim の戦闘系チェックフラグをそのままアラート化する。
+  combat:
+    enabled: true
+    # auto : GrimAC があれば Grim に任せる（推奨）。無ければ何もしない
+    # grim : Grim 連携のみ（Grim 未導入なら何もしない）
+    # off  : このモジュールを無効化（enabled: false と同じ）
+    # ※ custom（自前ロジック）はサポート外です
+    mode: auto
