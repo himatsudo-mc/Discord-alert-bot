@@ -52,6 +52,7 @@ public final class GrimBridge implements Listener {
     private volatile List<String> speedChecks = List.of();
     private volatile List<String> nukerChecks = List.of();
     private volatile List<String> flyChecks = List.of();
+    private volatile List<String> combatChecks = List.of();
     private volatile double minViolations = 5;
     private String hookedClassName = "";
 
@@ -75,6 +76,7 @@ public final class GrimBridge implements Listener {
         speedChecks = lowerCase(grimSection.getStringList("speed-checks"));
         nukerChecks = lowerCase(grimSection.getStringList("nuker-checks"));
         flyChecks = lowerCase(grimSection.getStringList("fly-checks"));
+        combatChecks = lowerCase(grimSection.getStringList("combat-checks"));
         minViolations = grimSection.getDouble("min-violations", 5);
 
         for (String className : FLAG_EVENT_CANDIDATES) {
@@ -192,6 +194,11 @@ public final class GrimBridge implements Listener {
         for (String key : nukerChecks) {
             if (lower.contains(key)) {
                 return AlertType.NUKER;
+            }
+        }
+        for (String key : combatChecks) {
+            if (lower.contains(key)) {
+                return AlertType.COMBAT;
             }
         }
         return null;

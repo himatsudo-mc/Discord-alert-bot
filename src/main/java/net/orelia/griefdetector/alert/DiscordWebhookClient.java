@@ -57,8 +57,10 @@ public final class DiscordWebhookClient {
         sb.append('{');
         sb.append("\"username\":").append(json(username)).append(',');
         sb.append("\"embeds\":[{");
-        sb.append("\"title\":").append(json("🚨 荒らし検知: " + alert.type().label())).append(',');
-        sb.append("\"color\":15548997,"); // 赤
+        sb.append("\"title\":")
+                .append(json(alert.type().severity().icon() + " 荒らし検知: " + alert.type().label()))
+                .append(',');
+        sb.append("\"color\":").append(alert.type().severity().color()).append(',');
         sb.append("\"fields\":[");
         sb.append(field("検知時間", time)).append(',');
         sb.append(field("プレイヤーID", alert.playerName() + " (" + alert.playerId() + ")")).append(',');
